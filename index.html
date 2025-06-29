@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Custom Ping Monitor</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            margin-top: 80px;
+            background-color: #f0f0f0;
+        }
+        input {
+            width: 300px;
+            padding: 8px;
+            font-size: 16px;
+        }
+        button {
+            padding: 8px 20px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        .status {
+            margin-top: 20px;
+            font-size: 18px;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔁 Ping URL tự động mỗi 5 phút</h1>
+    <p>Nhập URL cần giữ hoạt động:</p>
+    <input type="text" id="urlInput" placeholder="https://example.com">
+    <button onclick="startPing()">Bắt đầu Ping</button>
+
+    <div class="status" id="statusBox"></div>
+
+    <script>
+        let intervalId;
+
+        function startPing() {
+            const url = document.getElementById('urlInput').value;
+            const statusBox = document.getElementById('statusBox');
+
+            if (!url.startsWith('http')) {
+                alert("URL phải bắt đầu bằng http hoặc https");
+                return;
+            }
+
+            if (intervalId) clearInterval(intervalId); // reset nếu có
+
+            statusBox.innerHTML = `🚀 Bắt đầu ping: <code>${url}</code> mỗi 5 phút`;
+
+            // Ping ngay 1 lần
+            fetch(url).then(() => console.log("Ping ngay")).catch(() => {});
+
+            // Ping định kỳ
+            intervalId = setInterval(() => {
+                fetch(url)
+                    .then(() => console.log(`[Ping] ${url}`))
+                    .catch(() => console.warn("Ping thất bại"));
+            }, 300000); // 5 phút
+        }
+    </script>
+</body>
+</html>
